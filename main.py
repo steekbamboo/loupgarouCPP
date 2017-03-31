@@ -163,6 +163,17 @@ def menu():
                 else:
                     print("C'est la nuit, vous dormez !")
             if moment == 'cupidon':
+#
+#
+#
+#
+#
+# Commentaire numero 1
+#
+#
+#
+#
+#
                 if roleperso == 'cupidon':
                     print('Voici la liste des personnes en vie.')
                     i = 0
