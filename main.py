@@ -117,24 +117,74 @@ def menu():
         print("Vous êtes " + roleperso)
         listedeux = recupererliste('time')
         moment = listedeux['time']
-        if moment == 'start':
-            print("Le jeu vient de commencer. Une fois tout le monde prêt, la nuit commencera !")
-        if moment == 'garous':
-            if roleperso == 'garou':
-                i = 0
-                victime = []
-                print("Voici les personnages qui ne sont pas garous")
-                for erg in list(liste.keys()):
-                    if liste[erg] != 'garou':
-                        victime.append(erg)
-                        i += 1
-                        print(str(i) + " : " + erg)
-                print("Qui tuez vous ?")
-                tuer = input(">>>")
-                print("Vous voulez tuer " + victime[int(tuer) - 1])
-
-            else:
-                print("C'est la nuit, vous dormez !")
+        moment = 'garous'
+        vivants = []
+        for erg in list(liste.keys()):
+            if liste[erg] != 'mort':
+                vivants.append(erg)
+        if roleperso == 'mort':
+            print("Vous êtes mort ! Vous avez accès aux informations de base (qui meurt, quelle heure il est...) mais vous ne pouvez pas participer aux votes ni aux débats.")
+        else:
+            if moment == 'start':
+                print("Le jeu vient de commencer. Une fois tout le monde prêt, la nuit commencera !")
+            if moment == 'garous':
+                if roleperso == 'garou':
+                    i = 0
+                    victime = []
+                    print("Voici les personnages qui ne sont pas garous")
+                    for erg in list(liste.keys()):
+                        if liste[erg] != 'garou':
+                            victime.append(erg)
+                            i += 1
+                            print(str(i) + " : " + erg)
+                    print("Qui tuez vous ?")
+                    tuer = input(">>>")
+                    try:
+                        print("Vous voulez tuer " + victime[int(tuer) - 1])
+                    except:
+                        print("Saisie invalide. Veuillez recommencer l'opération.")
+                        menu()
+                elif roleperso == 'fille':
+                    garous = []
+                    for erg in list(liste.keys()):
+                        if liste[erg] == 'garou':
+                            garous.append(erg)
+                    print("Voici les personnes que vous semblez distinguer :")
+                    for joueur in garous:
+                        tmp = 0
+                        joueurcrypt = ''
+                        for lettre in joueur:
+                            if tmp % 3 == 0:
+                                joueurcrypt = joueurcrypt + lettre
+                            else:
+                                joueurcrypt = joueurcrypt + '*'
+                            tmp += 1
+                        print('...', joueurcrypt, '...')
+                else:
+                    print("C'est la nuit, vous dormez !")
+            if moment == 'cupidon':
+                if roleperso == 'cupidon':
+                    print('Voici la liste des personnes en vie.')
+                    i = 0
+                    for i in range(len(vivants)):
+                        print(i + 1, '-', vivants[i])
+                    print("Choisissez la première personne à rendre amoureuse")
+                    amoureux = int(input(">>>")) - 1
+                    while True:
+                        print("Choisissez de qui", vivants[amoureux], "sera amoureux")
+                        amoureuse = int(input('>>>')) - 1
+                        if amoureuse == amoureux:
+                            print('Saisie erronnée : vous devez choisir une personne différente de', vivants[amoureux])
+                        else:
+                            try:
+                                print("Par vos flèches et par l'amour, vous avez lié", vivants[
+                                      amoureux], 'et', vivants[amoureuse], "pour la vie, jusqu'à la mort.")
+                                break
+                            except:
+                                print("Saisie invalide. Veuillez recommencer l'opération.")
+                                menu()
+                else:
+                    print("C'est la nuit, vous dormez !")
 
 
 menu()
