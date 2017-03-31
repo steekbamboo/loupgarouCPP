@@ -80,13 +80,6 @@ def creercompte():
     print("vous avez bien été inscrit")
     menu()
 
-#
-#
-#
-# Commentaire 2
-#
-#
-#
 
 def connection():
     global utilisateur
