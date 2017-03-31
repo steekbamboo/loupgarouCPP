@@ -77,15 +77,18 @@ class Client():
         ftp.storlines("STOR " + nom, open(nom, 'rb'))
 
     def creercompte(self):
-        user = input("votre nom ? (a-z uniquement) \n")
-        mdpasse = input("mdp ? (a-z uniquement) \n")
+        self.welcome.destroy()
+        self.welcome.quit()
+        entreecreation = self.doublechamp("Bonjour ! Choisissez vos identifiants. \n Attention : n'utilisez que les caractères de A à Z. \n Les mots de passe sont stockés sur un serveur non protegé : \n n'utilisez pas un mot de passe important.", "Valider")
+        user = entreecreation[0]
+        mdpasse = entreecreation[1]
         self.envoi('submit', user + " = " + mdpasse, user + ".txt")
         print("vous avez bien été inscrit")
         self.menu()
 
     def validationdoublechamp(self):
-        self.utilisateur = self.entreeuser.get()
-        self.mdpasse = self.entreemdp.get()
+        self.entreeuser = self.entreeuser.get()
+        self.entreemdp = self.entreemdp.get()
         self.fenetre.destroy()
         self.fenetre.quit()
 
@@ -102,15 +105,18 @@ class Client():
         self.confirmation = Button(self.fenetre, text=validation, command=self.validationdoublechamp)
         self.confirmation.pack()
         self.fenetre.mainloop()
+        return(self.entreeuser, self.entreemdp)
 
     def connection(self):
-        self.doublechamp("Bonjour, veuillez vous connecter !", "Se connecter")
-        mdpasse = self.mdpasse
+        self.welcome.destroy()
+        self.welcome.quit()
+        entreeconnection = self.doublechamp("Bonjour, veuillez vous connecter !", "Se connecter")
+        mdpasse = entreeconnection[1]
+        self.utilisateur = entreeconnection[0]
         liste = self.recupererliste('users')
         try:
             vrai = liste[self.utilisateur]
             if mdpasse == vrai:
-                print("bonjour")
                 global connect
                 connect = 1
                 self.menu()
@@ -126,18 +132,31 @@ class Client():
 
     def menu(self):
         if connect == 0:
-            print("1 creer compte / 2 se connecter")
-            choix = input("choix ? \n")
-            self.creercompte() if choix == '1' else self.connection() if choix == '2' else self.menu()
+            self.welcome = Tk()
+            self.welcome.title("Menu")
+            messageplop = Label(self.welcome, text="Bonjour, et bienvenue sur le Loup-Garou du CPP ! \n Vous pouvez vous connecter, ou \n vous inscrire à la prochaine partie. \n \n")
+            messageplop.pack()
+            boutoncreation = Button(self.welcome, text="S'inscrire à la prochaine partie", command=self.creercompte)
+            boutonconnection = Button(self.welcome, text="Se connecter", command=self.connection)
+            boutoncreation.pack()
+            boutonconnection.pack()
+            credits = Label(text=" \n \n Un jeu crée par Loic Faucher et Baruch Byrdin. \n Nous sommes ouverts à vos suggestions !")
+            credits.pack()
+            self.welcome.mainloop()
         else:
-            print("Bienvenue " + self.utilisateur + " !")
+            self.welcome = Tk()
+            self.welcome.title("Menu")
+            messageplopun = Label(self.welcome, text="Bienvenue " + self.utilisateur + " !")
             liste = self.recupererliste('roles')
             roleperso = liste[self.utilisateur]
-            print("Vous êtes " + roleperso)
+            messageplopdeux = Label(self.welcome, text="Vous êtes " + roleperso)
+            messageplopun.pack()
+            messageplopdeux.pack()
             listedeux = self.recupererliste('time')
             moment = listedeux['time']
             moment = 'garous'
             vivants = []
+
             for erg in list(liste.keys()):
                 if liste[erg] != 'mort':
                     vivants.append(erg)
@@ -205,6 +224,8 @@ class Client():
                                     self.menu()
                     else:
                         print("C'est la nuit, vous dormez !")
+            
+            self.welcome.mainloop()
 
 
 Client()
