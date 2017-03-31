@@ -80,6 +80,13 @@ def creercompte():
     print("vous avez bien été inscrit")
     menu()
 
+#
+#
+#
+# Commentaire 2
+#
+#
+#
 
 def connection():
     global utilisateur
@@ -163,17 +170,6 @@ def menu():
                 else:
                     print("C'est la nuit, vous dormez !")
             if moment == 'cupidon':
-#
-#
-#
-#
-#
-# Commentaire numero 1
-#
-#
-#
-#
-#
                 if roleperso == 'cupidon':
                     print('Voici la liste des personnes en vie.')
                     i = 0
