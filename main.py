@@ -130,6 +130,10 @@ class Client():
         print(connect)
         self.menu()
 
+    def getchoixlistegarous(self):
+        self.retour = self.listeloups.curselection()
+        print("Vous voulez tuer " + self.victime[self.retour[0]])
+
     def menu(self):
         if connect == 0:
             self.welcome = Tk()
@@ -161,27 +165,29 @@ class Client():
                 if liste[erg] != 'mort':
                     vivants.append(erg)
             if roleperso == 'mort':
-                print("Vous êtes mort ! Vous avez accès aux informations de base (qui meurt, quelle heure il est...) mais vous ne pouvez pas participer aux votes ni aux débats.")
+                messagemort = Label(self.welcome, text="Vous êtes mort ! Vous avez accès aux informations de base (qui meurt, quelle heure il est...) mais vous ne pouvez pas participer aux votes ni aux débats.")
+                messagemort.pack()
+
             else:
                 if moment == 'start':
-                    print("Le jeu vient de commencer. Une fois tout le monde prêt, la nuit commencera !")
+                    messagewait = Label(self.welcome, text="Le jeu vient de commencer. Une fois tout le monde prêt, la nuit commencera !")
+                    messagewait.pack()
                 if moment == 'garous':
                     if roleperso == 'garou':
                         i = 0
-                        victime = []
-                        print("Voici les personnages qui ne sont pas garous")
+                        self.victime = []
+                        messagechoixloups = Label(self.welcome, text="Voici les personnages qui ne sont pas garous")
+                        messagechoixloups.pack()
+                        self.listeloups = Listbox(self.welcome)
                         for erg in list(liste.keys()):
                             if liste[erg] != 'garou':
-                                victime.append(erg)
+                                self.victime.append(erg)
                                 i += 1
-                                print(str(i) + " : " + erg)
-                        print("Qui tuez vous ?")
-                        tuer = input(">>>")
-                        try:
-                            print("Vous voulez tuer " + victime[int(tuer) - 1])
-                        except:
-                            print("Saisie invalide. Veuillez recommencer l'opération.")
-                            self.menu()
+                                self.listeloups.insert(END, (str(i) + " : " + erg))
+                        self.listeloups.pack()
+                        Label(text="Qui voulez vous tuer ?").pack()
+                        Button(text="Voter", command=self.getchoixlistegarous).pack()
+
                     elif roleperso == 'fille':
                         garous = []
                         for erg in list(liste.keys()):
