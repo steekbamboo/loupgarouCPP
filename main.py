@@ -50,6 +50,7 @@
 import urllib.request
 import ftplib
 from tkinter import *
+from random import *
 connect = 0
 
 
@@ -158,9 +159,14 @@ class Client():
             messageplopdeux.pack()
             listedeux = self.recupererliste('time')
             moment = listedeux['time']
-            moment = 'garous'
             vivants = []
-
+            nb_tours = 0 #T'as une idée de moyen de compter les tours ? En comptant le nb de votes, mais après comment ça se code ?
+            if nb_tours == 0:
+                nb_loups_depart = 0
+                for role in liste:
+                    if role == garou:
+                        nb_loups_depart += 1
+            
             for erg in list(liste.keys()):
                 if liste[erg] != 'mort':
                     vivants.append(erg)
@@ -169,14 +175,20 @@ class Client():
                 messagemort.pack()
 
             else:
+                
                 if moment == 'start':
+                    
                     messagewait = Label(self.welcome, text="Le jeu vient de commencer. Une fois tout le monde prêt, la nuit commencera !")
                     messagewait.pack()
+                    
                 if moment == 'garous':
+                    
+                    print("Les loups-garous se réveillent et choisissent une victime à dévorer...")
+                    
                     if roleperso == 'garou':
                         i = 0
                         self.victime = []
-                        messagechoixloups = Label(self.welcome, text="Voici les personnages qui ne sont pas garous")
+                        messagechoixloups = Label(self.welcome, text="Voici les personnages qui ne sont pas des loups-garous.")
                         messagechoixloups.pack()
                         self.listeloups = Listbox(self.welcome)
                         for erg in list(liste.keys()):
@@ -193,20 +205,50 @@ class Client():
                         for erg in list(liste.keys()):
                             if liste[erg] == 'garou':
                                 garous.append(erg)
-                        print("Voici les personnes que vous semblez distinguer :")
-                        for joueur in garous:
-                            tmp = 0
-                            joueurcrypt = ''
-                            for lettre in joueur:
-                                if tmp % 3 == 0:
-                                    joueurcrypt = joueurcrypt + lettre
+                        print("Voulez-vous observer discrètement les loups-garous ? Répondez 1 pour oui")
+                        answ = input(">>>") #Interface graphique plz
+                        try:
+                            if int(answ) == 1:
+                                ok = 0
+                                while ok = 0: # Boucle pour que la fille voie le meme loup maximum 3 fois
+                                # /!\ Je n'ai pas encore prévu le cas où la petite fille a déjà vu tous les loups 3 fois    
+                                    joueur = garous[randrange(len(garous))]
+                                    dejavu = 0
+                                    dejavus = []
+                                    for a in dejavus.txt: #Probablement pas la bonne syntaxe là non plus
+                                        joueur_djv = a.split('\n')
+                                        dejavus.append(joueur_djv)
+                                    for djv in dejavus:
+                                        if djv == joueur:
+                                            dejavu += 1
+                                    if dejavu <= 2:
+                                        ok = 1
+                                self.envoi('submit',joueur+'\n','dejavus.txt') #Pas sur d'avoir bien compris la syntaxe de cette fonction
+                                tmp = 0
+                                joueurcrypt = ''
+                                for lettre in joueur:
+                                    if tmp % 3 == dejavu or tmp % 3 == dejavu - 1 or tmp % 3 == dejavu - 2 :
+                                        joueurcrypt = joueurcrypt + lettre
+                                    else:
+                                        joueurcrypt = joueurcrypt + '*'
+                                    tmp += 1
+                                print('Vous semblez distinguer...',joueurcrypt,'...')
+                                risque = len(dejavus) / (4 * nb_loups_depart)
+                                if random() < risque:
+                                    fillevue += 1 # Il faut stocker cette variable quelque part sur le serveur
+                                    if fillevue == 1:
+                                        print("Les loups garous commencent à se sentir observés...")
+                                    if fillevue == 2:
+                                        print("Les loups garous commencent à retrouver votre piste...")
+                                    if fillevue == 3:
+                                        print("Les loups garous vous ont identifiée, attendez-vous au pire...")
                                 else:
-                                    joueurcrypt = joueurcrypt + '*'
-                                tmp += 1
-                            print('...', joueurcrypt, '...')
-                    else:
-                        print("C'est la nuit, vous dormez !")
+                                    print('Vos chances de vous faire repérer ont augmenté...')
+                    
                 if moment == 'cupidon':
+                    
+                    print("Cupidon se réveille et choisit deux personnes à lier par l'amour...")
+                    
                     if roleperso == 'cupidon':
                         print('Voici la liste des personnes en vie.')
                         i = 0
@@ -222,15 +264,24 @@ class Client():
                                       vivants[amoureux])
                             else:
                                 try:
+                                    self.envoi('submit',amoureux+'\n'+amoureuse,'amour.txt')
                                     print("Par vos flèches et par l'amour, vous avez lié", vivants[
                                           amoureux], 'et', vivants[amoureuse], "pour la vie, jusqu'à la mort.")
                                     break
                                 except:
                                     print("Saisie invalide. Veuillez recommencer l'opération.")
                                     self.menu()
-                    else:
-                        print("C'est la nuit, vous dormez !")
-            
+                
+                if moment == 'voyante':
+                    
+                    print("La voyante se réveille et choisit la personne dont elle veut découvrir la véritable identité...")
+                    if roleperso == voyante :
+                        for i in range(len(vivants)):
+                            print(i + 1,'-',vivants[i])
+                        print('Qui choisissez-vous ?')
+                        choix = input('>>>')
+                        print(vivants[choix - 1],'est',liste[choix - 1])
+                
             self.welcome.mainloop()
 
 
